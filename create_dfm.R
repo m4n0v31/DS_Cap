@@ -42,7 +42,7 @@ for(i in 2:4){
 # rm(dfm_2)
 # # barplot with 20 most occuring
 # ggplot(data[1:20,], aes(x = reorder(keyName, -count), y = count)) + geom_bar(stat = "identity")
-# # Calculate 1-grams coverage of the dataset
+# # Calculate 2-grams coverage of the dataset
 # data$cumsum <- cumsum(data$count)
 # stats <- c(sum(data$cumsum < sum(data$count)*50/100), sum(data$cumsum < sum(data$count)*90/100), sum(data$cumsum < sum(data$count)*95/100), nrow(data))
 # stats <- data.frame(as.list(stats))
