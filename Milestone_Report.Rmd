@@ -1,0 +1,196 @@
+---
+title: "DS_Cap Milestone Report"
+author: "m4n0v31"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{DS_Cap Milestone Report}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(cache=TRUE)
+```
+
+## Summary 
+
+This is a milestone report for the Coursera Data Science Specialization Capstone Project. The Capstone Project is realized in collaboration with `Swiftkey` and its goal is to mimic the experience of being a data scientist. The task is in fact to produce, starint from raw data, a data product which is able to predict the next word a user will input using the words the user input so far.  
+
+This report is meant to summarize the findings performed so far.
+
+## Getting the datasets
+
+Coursera is providing the zipped raw data at the following location: [data](https://d396qusza40orc.cloudfront.net/dsscapstone/dataset/Coursera-SwiftKey.zip) (`r round(file.size("Coursera-SwiftKey.zip")/1024/1024)` MB)
+
+Once unzipped the file presents a `final` directory containing the sub-directories `r list.files("final")`. Each sub-directory contains the text files to be analyzed. For example, the `en_US` folder contains:
+
+```r 
+grep('\\.txt',list.files("final/de_DE"), value= TRUE)
+```
+
+Since part of the project has to be based on `text mining` and `NLP (Natural Language Processing)` and the amount of time is limited, it was decided to focus on the texts written in english language. It was observed that in order to properly perform language processing (in particular to clean the data) knowledge of the language and language's rules is an advantage.
+
+The data on which the rest of the project will be performed is the following:
+
+```{r, results='asis', echo=FALSE}
+res <- cbind(matrix(paste("final/en_US",grep('\\.txt',list.files("final/en_US"), value= TRUE), sep="/")),paste(round(file.size(paste("final/en_US",grep('\\.txt',list.files("final/en_US"), value= TRUE), sep="/"))/1024/1024), "MB"))
+colnames(res) <- c("File:","Size:")
+knitr::kable(res)
+```
+
+## Exploration of the raw data
+
+The following table present a basic exploration of the three text files, the summary has been performed on the raw data.
+
+```{r, results='asis', echo=FALSE, warning=FALSE}
+library(stringi)
+# explore en_US data sets
+inputs <- c("blogs", "news", "twitter")
+output <- NULL
+
+for(i in inputs){
+    input <- paste("final/en_US/en_US.", i, ".txt", sep = "")
+    data <- readLines(input, encoding="UTF-8")
+    lines_text <- length(data)
+    # 3) length longest line;
+    char_number <- nchar(data)
+    stringi_stats <- stri_stats_general(data)
+    stringi_words <- stri_count_words(data, locale = "en_US")
+    
+    output <- rbind(output,c(i, stringi_stats[c(1,3)], summary(char_number)[c(4,6)],sum(stringi_words),summary(stringi_words)[c(4,6)]))
+}
+colnames(output) <- c("File", "Lines", "Total Chars", "Mean # Chars",  "Max. # Chars", "Total # Words", "Mean # Words", "Max. # Words")
+knitr::kable(output)
+```
+
+Since no cleaning of the data was performed before computing this summary (altough the `news` file had to be pre-processed by removing a special character that was preventing it to be loaded completly), some of the numbers presented could be partially inaccurate especially due to the presence of special characters in the raw texts. Cleaning of the data is an important task to be accomplished and it will be described in the next section.
+
+## Data Cleaning
+The cleaning of the data is performed with the support of the R text mining package `tm`. The cleaning process performs the following actions (note: implementation details are not provided in this report, the sosurce code can be found [here](https://github.com/m4n0v31/DS_Cap/blob/master/clean_dataset.R)):
+
+1. Remove non ASCII characters;
+2. Convert text to lowercase;
+3. Remove some special unicode characters and control sequences which are still present in the text;
+4. Trasform `Mr./Ms./Mrs.` into `Mr/Ms/Mrs` (the dot will be used later to dived the text into senteces);
+5. Remove URLs;
+6. Remove emails, twitter users, etc;
+7. Convert isolated `@` into `at`;
+8. Convert unicode characters often used insted of `'`;
+9. Convert punctuation used to delimit sentences (`!?:;()[]{}`) into `.`;
+10. Remove extra punctuation (not `'` and `.`);
+11. Remove same word coming in succession;
+11. Collapse multiple `.` and `'`;
+12. Remove numbers and strings mixed with numbers;
+13. Collapse spaces;
+14. Correct `n t` to `n't`;
+15. Divide into senteces (words prediction inside a sentence is the target application);
+16. Trim leading and tailing spaces
+17. Suppress "sentences" shorter than 3 chars;
+
+Extra cleaning was not considered necessary; mispelled words, non-english words, and extra text which is not considered a word (i.e. sshhhhhhh) are expected to be present in the cleaned data with far lower frequency with respect to real words and hence will be automatically filtered in the data reduction phase.
+
+Altough requested by the project, profanity words have not been removed so far, they are in fact part of the structure of the sentecnes and they will be removed only from the prediction output.
+
+## Data Sample
+
+The cleaned dataset has been sampled before performing an exploratory analysis on it. This was performed in order to reduce the time needed for the processing considering the fact that oftern relatively few randomly selected rows or chunks need to be included to get an accurate approximation to results that would be obtained using all the data.
+
+The data has been sampled as follows:
+
+- Train: 20%
+- Test and Validation: 80% (of which: Test 40% and Validation 60%)
+
+## Exploratory Analysis of the cleaned data
+
+Exploratory analysis has been perform in order to understand the distribution of words and relationship between the words in the corpora (set of texts). The analysis focused on the frequency of words and word pairs (bi-grams). Because of shortcomings of the `tm`package which was slow in creating the document term frequency matrix, the package `quanteda` was used to create these matrix.
+
+The following barplot shows the number of time the top 20 words appear in the corpora:
+
+```{r, results='asis', echo=FALSE, warning=FALSE, messages=FALSE, fig.width=7}
+library(ggplot2)
+library(quanteda)
+# load 1-grams
+load("data/dfm.RData")
+vec <- topfeatures(dfm, n = length(features(dfm)), decreasing = TRUE)
+data <- data.frame(keyName = names(vec), count = vec, row.names=NULL)
+rm(dfm)
+# barplot with 20 most occuring
+ggplot(data[1:20,], aes(x = reorder(keyName, -count), y = count)) + geom_bar(stat = "identity") +  xlab("words") + theme(axis.text.x = element_text(angle = 90))
+```
+
+To better understand the distribution of words in the texts, the following table shows the number of unique words needed to cover some percentage of the whole text:
+
+```{r, results='asis', echo=FALSE, warning=FALSE, messages=FALSE}
+# Calculate 1-grams coverage of the dataset
+data$cumsum <- cumsum(data$count)
+stats <- c(sum(data$cumsum < sum(data$count)*50/100), sum(data$cumsum < sum(data$count)*90/100), sum(data$cumsum < sum(data$count)*95/100), nrow(data))
+stats <- data.frame(as.list(stats))
+stats <- matrix(stats,ncol=4)
+colnames(stats) <- c("50%", "90%", "95%", "100%")
+rownames(stats) <- c("# words")
+knitr::kable((stats))
+```
+
+To further investigate the features of the texts, the following barplot shows the number of time the top 20 bi-grams appear in the corpora:
+
+```{r, results='asis', echo=FALSE, warning=FALSE, messages=FALSE, fig.width=7}
+# load 2-grams
+load("data/dfm_2.RData")
+vec <- topfeatures(dfm_2, n = length(features(dfm_2)), decreasing = TRUE)
+data <- data.frame(keyName = names(vec), count = vec, row.names=NULL)
+rm(dfm_2)
+# barplot with 20 most occuring
+ggplot(data[1:20,], aes(x = reorder(keyName, -count), y = count)) + geom_bar(stat = "identity") + xlab("bi-grams") + theme(axis.text.x = element_text(angle = 90))
+```
+
+The coverage of the bi-grams is anyway different with respect to that of the words, the following table shows the number of unique bi-grams needed to cover some percentage of the whole text:
+
+```{r, results='asis', echo=FALSE, warning=FALSE, messages=FALSE}
+# Calculate 2-grams coverage of the dataset
+data$cumsum <- cumsum(data$count)
+stats <- c(sum(data$cumsum < sum(data$count)*50/100), sum(data$cumsum < sum(data$count)*90/100), sum(data$cumsum < sum(data$count)*95/100), nrow(data))
+stats <- data.frame(as.list(stats))
+stats <- matrix(stats,ncol=4)
+colnames(stats) <- c("50%", "90%", "95%", "100%")
+rownames(stats) <- c("# bi-grams")
+knitr::kable((stats))
+```
+
+These frequency analisys give us information about the text structure and gives some hints on how to possibly reduce the size of the model.
+
+## Model
+
+Currently a `First Stupid Model` has been created as follows:
+
+1. Compute document term frequency matrix for: `unigrams, bi-grams, tri-grams and 4-grams`;
+2. Reduce unigrams matrix size by only keeping the number of words need to cover `95%` of the whole text;
+3. Strip bi-grams, tri-grams and 4-grams of features containing words not in the reduced unigrams matrix;
+4. Reduce tri-grams and 4-grams matrix by removing n-grams appearing only once.
+5. Reduce n-gram by grouping the n-1 terms and just keeping the 3 most occuring n-grams.
+
+The prediction model then uses the created matrix as follows:
+
+1. Get the user input sentence and split it into words, then the next steps are performed depending on the length of the sentece.
+2. Check if the last 3 words of the sentence exist as the first 3 words in a 4-grams, if 4-grams exist output the 4th word, otherwise continue.
+2. Check if the last 2 words of the sentence exist as the first 2 words in a 3-grams, if 3-grams exist output the 3rd word, otherwise continue.
+2. Check if the last word of the sentence exists as the first word in a bi-grams, if bi-grams exist output the 2nd word, otherwise continue.
+2. Output the most frequent unigram.
+
+## Further work
+The model has to be completed or refined in the following fields:
+
+- creation of a shiny application to run the model;
+- add support for words which are input by the user but are not present in the model (removed in the reduction phase, or never seen in the dataset). This could be done by using `Kneser-Ney Smoothing`;
+- profanity has to be removed from the predicted and returned words;
+- testing of model size and performance for different techniques and thresholds used to reduce the size of the model.
+
+## Appendix
+The code of the work performed so far can be found [here](https://github.com/m4n0v31/DS_Cap).
+
+1. Install required packages: `install_packages.R`
+1. Download, unzip and pre-process: `get_dataset.R`
+1. Explore raw data (+Quiz1): `explore_raw_dataset.R`
+1. Clean dataset and create sample: `clean_dataset.R`
+1. Create document term frequency matrix: `create_dfm.R`
+1. Reduce the size of document frequency matrix: `dfm_reduction.R`
+1. First Stupid Model (+Quiz2): `stupid_model.R`

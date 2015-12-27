@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="author" content="m4n0v31" />
+
+<meta name="date" content="2015-12-27" />
+
+<title>DS_Cap Milestone Report</title>
+
+
+
+
+<link href="data:text/css,body%20%7B%0A%20%20background%2Dcolor%3A%20%23fff%3B%0A%20%20margin%3A%201em%20auto%3B%0A%20%20max%2Dwidth%3A%20700px%3B%0A%20%20overflow%3A%20visible%3B%0A%20%20padding%2Dleft%3A%202em%3B%0A%20%20padding%2Dright%3A%202em%3B%0A%20%20font%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0A%20%20font%2Dsize%3A%2014px%3B%0A%20%20line%2Dheight%3A%201%2E35%3B%0A%7D%0A%0A%23header%20%7B%0A%20%20text%2Dalign%3A%20center%3B%0A%7D%0A%0A%23TOC%20%7B%0A%20%20clear%3A%20both%3B%0A%20%20margin%3A%200%200%2010px%2010px%3B%0A%20%20padding%3A%204px%3B%0A%20%20width%3A%20400px%3B%0A%20%20border%3A%201px%20solid%20%23CCCCCC%3B%0A%20%20border%2Dradius%3A%205px%3B%0A%0A%20%20background%2Dcolor%3A%20%23f6f6f6%3B%0A%20%20font%2Dsize%3A%2013px%3B%0A%20%20line%2Dheight%3A%201%2E3%3B%0A%7D%0A%20%20%23TOC%20%2Etoctitle%20%7B%0A%20%20%20%20font%2Dweight%3A%20bold%3B%0A%20%20%20%20font%2Dsize%3A%2015px%3B%0A%20%20%20%20margin%2Dleft%3A%205px%3B%0A%20%20%7D%0A%0A%20%20%23TOC%20ul%20%7B%0A%20%20%20%20padding%2Dleft%3A%2040px%3B%0A%20%20%20%20margin%2Dleft%3A%20%2D1%2E5em%3B%0A%20%20%20%20margin%2Dtop%3A%205px%3B%0A%20%20%20%20margin%2Dbottom%3A%205px%3B%0A%20%20%7D%0A%20%20%23TOC%20ul%20ul%20%7B%0A%20%20%20%20margin%2Dleft%3A%20%2D2em%3B%0A%20%20%7D%0A%20%20%23TOC%20li%20%7B%0A%20%20%20%20line%2Dheight%3A%2016px%3B%0A%20%20%7D%0A%0Atable%20%7B%0A%20%20margin%3A%201em%20auto%3B%0A%20%20border%2Dwidth%3A%201px%3B%0A%20%20border%2Dcolor%3A%20%23DDDDDD%3B%0A%20%20border%2Dstyle%3A%20outset%3B%0A%20%20border%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0A%20%20border%2Dwidth%3A%202px%3B%0A%20%20padding%3A%205px%3B%0A%20%20border%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0A%20%20border%2Dwidth%3A%201px%3B%0A%20%20border%2Dstyle%3A%20inset%3B%0A%20%20line%2Dheight%3A%2018px%3B%0A%20%20padding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0A%20%20border%2Dleft%2Dstyle%3A%20none%3B%0A%20%20border%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0A%20%20background%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0A%0Ap%20%7B%0A%20%20margin%3A%200%2E5em%200%3B%0A%7D%0A%0Ablockquote%20%7B%0A%20%20background%2Dcolor%3A%20%23f6f6f6%3B%0A%20%20padding%3A%200%2E25em%200%2E75em%3B%0A%7D%0A%0Ahr%20%7B%0A%20%20border%2Dstyle%3A%20solid%3B%0A%20%20border%3A%20none%3B%0A%20%20border%2Dtop%3A%201px%20solid%20%23777%3B%0A%20%20margin%3A%2028px%200%3B%0A%7D%0A%0Adl%20%7B%0A%20%20margin%2Dleft%3A%200%3B%0A%7D%0A%20%20dl%20dd%20%7B%0A%20%20%20%20margin%2Dbottom%3A%2013px%3B%0A%20%20%20%20margin%2Dleft%3A%2013px%3B%0A%20%20%7D%0A%20%20dl%20dt%20%7B%0A%20%20%20%20font%2Dweight%3A%20bold%3B%0A%20%20%7D%0A%0Aul%20%7B%0A%20%20margin%2Dtop%3A%200%3B%0A%7D%0A%20%20ul%20li%20%7B%0A%20%20%20%20list%2Dstyle%3A%20circle%20outside%3B%0A%20%20%7D%0A%20%20ul%20ul%20%7B%0A%20%20%20%20margin%2Dbottom%3A%200%3B%0A%20%20%7D%0A%0Apre%2C%20code%20%7B%0A%20%20background%2Dcolor%3A%20%23f7f7f7%3B%0A%20%20border%2Dradius%3A%203px%3B%0A%20%20color%3A%20%23333%3B%0A%7D%0Apre%20%7B%0A%20%20white%2Dspace%3A%20pre%2Dwrap%3B%20%20%20%20%2F%2A%20Wrap%20long%20lines%20%2A%2F%0A%20%20border%2Dradius%3A%203px%3B%0A%20%20margin%3A%205px%200px%2010px%200px%3B%0A%20%20padding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0A%20%20background%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0A%0Acode%20%7B%0A%20%20font%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0A%20%20font%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0A%20%20padding%3A%202px%200px%3B%0A%7D%0A%0Adiv%2Efigure%20%7B%0A%20%20text%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0A%20%20background%2Dcolor%3A%20%23FFFFFF%3B%0A%20%20padding%3A%202px%3B%0A%20%20border%3A%201px%20solid%20%23DDDDDD%3B%0A%20%20border%2Dradius%3A%203px%3B%0A%20%20border%3A%201px%20solid%20%23CCCCCC%3B%0A%20%20margin%3A%200%205px%3B%0A%7D%0A%0Ah1%20%7B%0A%20%20margin%2Dtop%3A%200%3B%0A%20%20font%2Dsize%3A%2035px%3B%0A%20%20line%2Dheight%3A%2040px%3B%0A%7D%0A%0Ah2%20%7B%0A%20%20border%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0A%20%20padding%2Dtop%3A%2010px%3B%0A%20%20padding%2Dbottom%3A%202px%3B%0A%20%20font%2Dsize%3A%20145%25%3B%0A%7D%0A%0Ah3%20%7B%0A%20%20border%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0A%20%20padding%2Dtop%3A%2010px%3B%0A%20%20font%2Dsize%3A%20120%25%3B%0A%7D%0A%0Ah4%20%7B%0A%20%20border%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0A%20%20margin%2Dleft%3A%208px%3B%0A%20%20font%2Dsize%3A%20105%25%3B%0A%7D%0A%0Ah5%2C%20h6%20%7B%0A%20%20border%2Dbottom%3A%201px%20solid%20%23ccc%3B%0A%20%20font%2Dsize%3A%20105%25%3B%0A%7D%0A%0Aa%20%7B%0A%20%20color%3A%20%230033dd%3B%0A%20%20text%2Ddecoration%3A%20none%3B%0A%7D%0A%20%20a%3Ahover%20%7B%0A%20%20%20%20color%3A%20%236666ff%3B%20%7D%0A%20%20a%3Avisited%20%7B%0A%20%20%20%20color%3A%20%23800080%3B%20%7D%0A%20%20a%3Avisited%3Ahover%20%7B%0A%20%20%20%20color%3A%20%23BB00BB%3B%20%7D%0A%20%20a%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0A%20%20%20%20text%2Ddecoration%3A%20underline%3B%20%7D%0A%20%20a%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0A%20%20%20%20text%2Ddecoration%3A%20underline%3B%20%7D%0A%0A%2F%2A%20Class%20described%20in%20https%3A%2F%2Fbenjeffrey%2Ecom%2Fposts%2Fpandoc%2Dsyntax%2Dhighlighting%2Dcss%0A%20%20%20Colours%20from%20https%3A%2F%2Fgist%2Egithub%2Ecom%2Frobsimmons%2F1172277%20%2A%2F%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%2F%2A%20Keyword%20%2A%2F%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%2F%2A%20DataType%20%2A%2F%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%2F%2A%20DecVal%20%28decimal%20values%29%20%2A%2F%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%2F%2A%20BaseN%20%2A%2F%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%2F%2A%20Float%20%2A%2F%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%2F%2A%20Char%20%2A%2F%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%2F%2A%20String%20%2A%2F%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%2F%2A%20Comment%20%2A%2F%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%2F%2A%20OtherToken%20%2A%2F%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%2F%2A%20AlertToken%20%2A%2F%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%2F%2A%20Function%20calls%20%2A%2F%20%0Acode%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%2F%2A%20ErrorTok%20%2A%2F%0A%0A" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body>
+
+
+
+<div id="header">
+<h1 class="title">DS_Cap Milestone Report</h1>
+<h4 class="author"><em>m4n0v31</em></h4>
+<h4 class="date"><em>2015-12-27</em></h4>
+</div>
+
+
+<div id="summary" class="section level2">
+<h2>Summary</h2>
+<p>This is a milestone report for the Coursera Data Science Specialization Capstone Project. The Capstone Project is realized in collaboration with <code>Swiftkey</code> and its goal is to mimic the experience of being a data scientist. The task is in fact to produce, starint from raw data, a data product which is able to predict the next word a user will input using the words the user input so far.</p>
+<p>This report is meant to summarize the findings performed so far.</p>
+</div>
+<div id="getting-the-datasets" class="section level2">
+<h2>Getting the datasets</h2>
+<p>Coursera is providing the zipped raw data at the following location: <a href="https://d396qusza40orc.cloudfront.net/dsscapstone/dataset/Coursera-SwiftKey.zip">data</a> (548 MB)</p>
+<p>Once unzipped the file presents a <code>final</code> directory containing the sub-directories de_DE, en_US, fi_FI, ru_RU. Each sub-directory contains the text files to be analyzed. For example, the <code>en_US</code> folder contains:</p>
+<p><code>de_DE.blogs.txt, de_DE.news.txt, de_DE.twitter.txt</code></p>
+<p>Since part of the project has to be based on <code>text mining</code> and <code>NLP (Natural Language Processing)</code> and the amount of time is limited, it was decided to focus on the texts written in english language. It was observed that in order to properly perform language processing (in particular to clean the data) knowledge of the language and language’s rules is an advantage.</p>
+<p>The data on which the rest of the project will be performed is the following:</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">File:</th>
+<th align="left">Size:</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">final/en_US/en_US.blogs.txt</td>
+<td align="left">200 MB</td>
+</tr>
+<tr class="even">
+<td align="left">final/en_US/en_US.news.txt</td>
+<td align="left">196 MB</td>
+</tr>
+<tr class="odd">
+<td align="left">final/en_US/en_US.twitter.txt</td>
+<td align="left">159 MB</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="exploration-of-the-raw-data" class="section level2">
+<h2>Exploration of the raw data</h2>
+<p>The following table present a basic exploration of the three text files, the summary has been performed on the raw data.</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">File</th>
+<th align="left">Lines</th>
+<th align="left">Total Chars</th>
+<th align="left">Mean # Chars</th>
+<th align="left">Max. # Chars</th>
+<th align="left">Total # Words</th>
+<th align="left">Mean # Words</th>
+<th align="left">Max. # Words</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">blogs</td>
+<td align="left">899288</td>
+<td align="left">206824382</td>
+<td align="left">230</td>
+<td align="left">40830</td>
+<td align="left">37546246</td>
+<td align="left">41.75</td>
+<td align="left">6726</td>
+</tr>
+<tr class="even">
+<td align="left">news</td>
+<td align="left">1010242</td>
+<td align="left">203223150</td>
+<td align="left">201.2</td>
+<td align="left">11380</td>
+<td align="left">34762395</td>
+<td align="left">34.41</td>
+<td align="left">1796</td>
+</tr>
+<tr class="odd">
+<td align="left">twitter</td>
+<td align="left">2360148</td>
+<td align="left">162096031</td>
+<td align="left">68.68</td>
+<td align="left">140</td>
+<td align="left">30093369</td>
+<td align="left">12.75</td>
+<td align="left">47</td>
+</tr>
+</tbody>
+</table>
+<p>Since no cleaning of the data was performed before computing this summary (altough the <code>news</code> file had to be pre-processed by removing a special character that was preventing it to be loaded completly), some of the numbers presented could be partially inaccurate especially due to the presence of special characters in the raw texts. Cleaning of the data is an important task to be accomplished and it will be described in the next section.</p>
+</div>
+<div id="data-cleaning" class="section level2">
+<h2>Data Cleaning</h2>
+<p>The cleaning of the data is performed with the support of the R text mining package <code>tm</code>. The cleaning process performs the following actions (note: implementation details are not provided in this report, the sosurce code can be found <a href="https://github.com/m4n0v31/DS_Cap/blob/master/clean_dataset.R">here</a>):</p>
+<ol style="list-style-type: decimal">
+<li>Remove non ASCII characters;</li>
+<li>Convert text to lowercase;</li>
+<li>Remove some special unicode characters and control sequences which are still present in the text;</li>
+<li>Trasform <code>Mr./Ms./Mrs.</code> into <code>Mr/Ms/Mrs</code> (the dot will be used later to dived the text into senteces);</li>
+<li>Remove URLs;</li>
+<li>Remove emails, twitter users, etc;</li>
+<li>Convert isolated <code>@</code> into <code>at</code>;</li>
+<li>Convert unicode characters often used insted of <code>'</code>;</li>
+<li>Convert punctuation used to delimit sentences (<code>!?:;()[]{}</code>) into <code>.</code>;</li>
+<li>Remove extra punctuation (not <code>'</code> and <code>.</code>);</li>
+<li>Remove same word coming in succession;</li>
+<li>Collapse multiple <code>.</code> and <code>'</code>;</li>
+<li>Remove numbers and strings mixed with numbers;</li>
+<li>Collapse spaces;</li>
+<li>Correct <code>n t</code> to <code>n't</code>;</li>
+<li>Divide into senteces (words prediction inside a sentence is the target application);</li>
+<li>Trim leading and tailing spaces</li>
+<li>Suppress “sentences” shorter than 3 chars;</li>
+</ol>
+<p>Extra cleaning was not considered necessary; mispelled words, non-english words, and extra text which is not considered a word (i.e. sshhhhhhh) are expected to be present in the cleaned data with far lower frequency with respect to real words and hence will be automatically filtered in the data reduction phase.</p>
+<p>Altough requested by the project, profanity words have not been removed so far, they are in fact part of the structure of the sentecnes and they will be removed only from the prediction output.</p>
+</div>
+<div id="data-sample" class="section level2">
+<h2>Data Sample</h2>
+<p>The cleaned dataset has been sampled before performing an exploratory analysis on it. This was performed in order to reduce the time needed for the processing considering the fact that oftern relatively few randomly selected rows or chunks need to be included to get an accurate approximation to results that would be obtained using all the data.</p>
+<p>The data has been sampled as follows:</p>
+<ul>
+<li>Train: 20%</li>
+<li>Test and Validation: 80% (of which: Test 40% and Validation 60%)</li>
+</ul>
+</div>
+<div id="exploratory-analysis-of-the-cleaned-data" class="section level2">
+<h2>Exploratory Analysis of the cleaned data</h2>
+<p>Exploratory analysis has been perform in order to understand the distribution of words and relationship between the words in the corpora (set of texts). The analysis focused on the frequency of words and word pairs (bi-grams). Because of shortcomings of the <code>tm</code>package which was slow in creating the document term frequency matrix, the package <code>quanteda</code> was used to create these matrix.</p>
+<p>The following barplot shows the number of time the top 20 words appear in the corpora:</p>
+<p><img src="data:image/png;base64,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" /></p>
+<p>To better understand the distribution of words in the texts, the following table shows the number of unique words needed to cover some percentage of the whole text:</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="left">50%</th>
+<th align="left">90%</th>
+<th align="left">95%</th>
+<th align="left">100%</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"># words</td>
+<td align="left">138</td>
+<td align="left">7171</td>
+<td align="left">16835</td>
+<td align="left">246268</td>
+</tr>
+</tbody>
+</table>
+<p>To further investigate the features of the texts, the following barplot shows the number of time the top 20 bi-grams appear in the corpora:</p>
+<p><img src="data:image/png;base64,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" /></p>
+<p>The coverage of the bi-grams is anyway different with respect to that of the words, the following table shows the number of unique bi-grams needed to cover some percentage of the whole text:</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="left">50%</th>
+<th align="left">90%</th>
+<th align="left">95%</th>
+<th align="left">100%</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"># bi-grams</td>
+<td align="left">44478</td>
+<td align="left">2740191</td>
+<td align="left">3747260</td>
+<td align="left">4754329</td>
+</tr>
+</tbody>
+</table>
+<p>These frequency analisys give us information about the text structure and gives some hints on how to possibly reduce the size of the model.</p>
+</div>
+<div id="model" class="section level2">
+<h2>Model</h2>
+<p>Currently a <code>First Stupid Model</code> has been created as follows:</p>
+<ol style="list-style-type: decimal">
+<li>Compute document term frequency matrix for: <code>unigrams, bi-grams, tri-grams and 4-grams</code>;</li>
+<li>Reduce unigrams matrix size by only keeping the number of words need to cover <code>95%</code> of the whole text;</li>
+<li>Strip bi-grams, tri-grams and 4-grams of features containing words not in the reduced unigrams matrix;</li>
+<li>Reduce tri-grams and 4-grams matrix by removing n-grams appearing only once.</li>
+<li>Reduce n-gram by grouping the n-1 terms and just keeping the 3 most occuring n-grams.</li>
+</ol>
+<p>The prediction model then uses the created matrix as follows:</p>
+<ol style="list-style-type: decimal">
+<li>Get the user input sentence and split it into words, then the next steps are performed depending on the length of the sentece.</li>
+<li>Check if the last 3 words of the sentence exist as the first 3 words in a 4-grams, if 4-grams exist output the 4th word, otherwise continue.</li>
+<li>Check if the last 2 words of the sentence exist as the first 2 words in a 3-grams, if 3-grams exist output the 3rd word, otherwise continue.</li>
+<li>Check if the last word of the sentence exists as the first word in a bi-grams, if bi-grams exist output the 2nd word, otherwise continue.</li>
+<li>Output the most frequent unigram.</li>
+</ol>
+</div>
+<div id="further-work" class="section level2">
+<h2>Further work</h2>
+<p>The model has to be completed or refined in the following fields:</p>
+<ul>
+<li>creation of a shiny application to run the model;</li>
+<li>add support for words which are input by the user but are not present in the model (removed in the reduction phase, or never seen in the dataset). This could be done by using <code>Kneser-Ney Smoothing</code>;</li>
+<li>profanity has to be removed from the predicted and returned words;</li>
+<li>testing of model size and performance for different techniques and thresholds used to reduce the size of the model.</li>
+</ul>
+</div>
+<div id="appendix" class="section level2">
+<h2>Appendix</h2>
+<p>The code of the work performed so far can be found <a href="https://github.com/m4n0v31/DS_Cap">here</a>.</p>
+<ol style="list-style-type: decimal">
+<li>Install required packages: <code>install_packages.R</code></li>
+<li>Download, unzip and pre-process: <code>get_dataset.R</code></li>
+<li>Explore raw data (+Quiz1): <code>explore_raw_dataset.R</code></li>
+<li>Clean dataset and create sample: <code>clean_dataset.R</code></li>
+<li>Create document term frequency matrix: <code>create_dfm.R</code></li>
+<li>Reduce the size of document frequency matrix: <code>dfm_reduction.R</code></li>
+<li>First Stupid Model (+Quiz2): <code>stupid_model.R</code></li>
+</ol>
+</div>
+
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
