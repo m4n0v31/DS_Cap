@@ -15,6 +15,7 @@ shinyServer(function(input, output) {
     
     # Show the first "n" observations
     output$prediction <- renderTable({
-      predictNextWord(input$prev_words)
+      res <- predictNextWord(input$prev_words) 
+      head(res,n=3)
     })
 })

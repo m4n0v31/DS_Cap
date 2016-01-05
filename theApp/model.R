@@ -40,92 +40,102 @@ filterProfanity <- function(x) {
 ## Check unigrams
 nextWords_1 <- function() {
   out <- data.table(head(dfm_r1,n=3))
-  out$count <- out$count/sum(dfm_r1$count)
-  names(out) <- c('next','prob')
-  return(out)
+  out$count <- out$count/sum(out$count)
+  res <- data.table(matrix(data=0,nrow=nrow(out),ncol=6))
+  res$V1 <- out$count
+  res <- cbind(word=as.character(out$V1),res)
+  return(res)
 }
 
 ## Check bigrams
 nextWords_2 <- function(x) {
   len <- length(x)
   if (len < 1)
-    return(data.table("next" = character(0), "prob" = numeric(0)))
-  out <- dfm_r2[V1 == x[len], .(count = sum(count)), by=(NextWord=V2)][order(-count)]
+    return(data.table("word" = character(0), matrix(data=0,nrow=0,ncol=6)))
+  out <- dfm_r2[V1 == x[len], .(count = sum(count)), by=V2][order(-count)]
   out$count <- out$count/sum(out$count)
-  names(out) <- c('next','prob')
-  return(out)
+  res <- data.table(matrix(data=0,nrow=nrow(out),ncol=6))
+  res$V2 <- out$count
+  res <- cbind(word=as.character(out$V2),res)  
+  return(res)
 }
 
 ## Check trigrams
-nextWords_3 <- function(x, gamma=0.3) {
+nextWords_3 <- function(x) {
   len <- length(x)
   if (len < 2)
-    return(data.table("next" = character(0), "prob" = numeric(0)))  
-  out <- dfm_r3[V1==x[len-1] & V2==x[len], .(count = sum(count)), by=(NextWord=V3)][order(-count)]    
-  out$count <- out$count/sum(out$count)*(1-gamma)
-  names(out) <- c('next','prob')  
+    return(data.table("word" = character(0), matrix(data=0,nrow=0,ncol=6)))  
+  out <- dfm_r3[V1==x[len-1] & V2==x[len], .(count = sum(count)), by=V3][order(-count)]    
+  out$count <- out$count/sum(out$count)
+  res <- data.table(matrix(data=0,nrow=nrow(out),ncol=6))
+  res$V3 <- out$count
+  res <- cbind(word=as.character(out$V3),res)  
   
-  out2 <- dfm_r3[V1==x[len-1], .(count = sum(count)), by=(NextWord=V3)][order(-count)]
-  out2$count <- out2$count/sum(out2$count)*gamma
-  names(out2) <- c('next','prob')  
+  out <- dfm_r3[V1==x[len-1], .(count = sum(count)), by=V3][order(-count)]
+  out$count <- out$count/sum(out$count)
+  res2 <- data.table(matrix(data=0,nrow=nrow(out),ncol=6))
+  res2$V4 <- out$count
+  res2 <- cbind(word=as.character(out$V3),res2) 
   
-  out <- rbind(out, out2)
-  out <- out[,.(prob=sum(prob)),by="next"]
-  return(out)
+  res <- rbind(res, res2)
+  return(res)
 }
 
 ## Check quadgrams
-nextWords_4 <- function(x, gamma=0.3) {
+nextWords_4 <- function(x) {
   len <- length(x)
   if (len < 3)
-    return(data.table("next" = character(0), "prob" = numeric(0)))  
-  out <- dfm_r4[V1==x[len-2] & V2==x[len-1] & V3==x[len], .(count = sum(count)), by=(NextWord=V4)][order(-count)]     
-  out$count <- out$count/sum(out$count)*(1-gamma)
-  names(out) <- c('next','prob')  
+    return(data.table("word" = character(0), matrix(data=0,nrow=0,ncol=6)))  
+  out <- dfm_r4[V1==x[len-2] & V2==x[len-1] & V3==x[len], .(count = sum(count)), by=V4][order(-count)]     
+  out$count <- out$count/sum(out$count)
+  res <- data.table(matrix(data=0,nrow=nrow(out),ncol=6))
+  res$V5 <- out$count
+  res <- cbind(word=as.character(out$V4),res)   
+
+  out <- dfm_r4[V1==x[len-2], .(count = sum(count)), by=V4][order(-count)]
+  out$count <- out$count/sum(out$count)*(1/3)
+  res2 <- data.table(matrix(data=0,nrow=nrow(out),ncol=6))
+  res2$V6 <- out$count
+  res2 <- cbind(word=as.character(out$V4),res2) 
+  res <- rbind(res, res2)  
+
+  out <- dfm_r4[V1==x[len-2] & V2==x[len-1], .(count = sum(count)), by=V4][order(-count)]
+  out$count <- out$count/sum(out$count)*(1/3)
+  res2 <- data.table(matrix(data=0,nrow=nrow(out),ncol=6))
+  res2$V6 <- out$count
+  res2 <- cbind(word=as.character(out$V4),res2) 
+  res <- rbind(res, res2)  
   
-  out2 <- dfm_r4[V1==x[len-2], .(count = sum(count)), by=(NextWord=V4)][order(-count)]
-  out2$count <- out2$count/sum(out2$count)*gamma*(1/3)
-  names(out2) <- c('next','prob')  
-  out <- rbind(out, out2)
-  
-  out2 <- dfm_r4[V1==x[len-2] & V2==x[len-1], .(count = sum(count)), by=(NextWord=V4)][order(-count)]
-  out2$count <- out2$count/sum(out2$count)*gamma*(1/3)
-  names(out2) <- c('next','prob')  
-  out <- rbind(out, out2)
-  
-  out2 <- dfm_r4[V1==x[len-2] & V3==x[len], .(count = sum(count)), by=(NextWord=V4)][order(-count)] 
-  out2$count <- out2$count/sum(out2$count)*gamma*(1/3)
-  names(out2) <- c('next','prob')  
-  out <- rbind(out, out2)
-  
-  out <- out[,.(prob=sum(prob)),by="next"]
-  return(out)
+  out <- dfm_r4[V1==x[len-2] & V3==x[len], .(count = sum(count)), by=V4][order(-count)] 
+  out$count <- out$count/sum(out$count)*(1/3)
+  res2 <- data.table(matrix(data=0,nrow=nrow(out),ncol=6))
+  res2$V6 <- out$count
+  res2 <- cbind(word=as.character(out$V4),res2) 
+  res <- rbind(res, res2) 
+
+  return(res)
 }
 
-predictNextWord <- function(x, lambda=c(0.4,0.3,0.2,0.1)){
+predictNextWord <- function(x, gamma=c(0.3,0.2), lambda=c(0.02,0.2,0.3,0.48)){
   x <- splitInput(x)
+  len <- length(x)
   
-  out <- nextWords_4(x)
-  out$prob <- out$prob * lambda[1]
+  out <- nextWords_1()
+  if (len > 0)
+    out <- rbind(out, nextWords_2(x))
+  if (len > 1)
+    out <- rbind(out, nextWords_3(x))  
+  if (len > 2)
+    out <- rbind(out, nextWords_4(x))   
   
-  out2 <- nextWords_3(x)
-  out2$prob <- out2$prob * lambda[2]
-  out <- rbind(out, out2)
-  
-  out2 <- nextWords_2(x)
-  out2$prob <- out2$prob * lambda[3]
-  out <- rbind(out, out2)
-  
-  out2 <- nextWords_1()
-  out2$prob <- out2$prob * lambda[4]
-  out <- rbind(out, out2)
-  
-  out <- out[,.(prob=sum(prob)),by="next"][order(-prob)]
+  theFactor <- sum(lambda[1:min(4,len+1)])
+  out <- out[,.(prob=(sum(V1)*lambda[1]+sum(V2)*lambda[2]+(sum(V3)*(1-gamma[1])+sum(V4)*gamma[1])*lambda[3]+(sum(V5)*(1-gamma[2])+sum(V6)*gamma[2])*lambda[4])/theFactor),by="word"][order(-prob)]
   
   out$prob <- out$prob * 100
-  names(out) <- c("next", "confidence (%)")
   
-  return(filterProfanity(head(out,n=3)))
+  names(out) <- c("word","prob (%)")
+  
+  return(filterProfanity(out))
 }
 
 
