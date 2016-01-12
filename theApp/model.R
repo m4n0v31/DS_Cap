@@ -116,7 +116,7 @@ nextWords_4 <- function(x) {
   return(res)
 }
 
-predictNextWord <- function(x, gamma=c(0.3,0.2), lambda=c(0.02,0.2,0.3,0.48)){
+predictNextWord <- function(x, gamma=c(0.1,0.3), lambda=c(0.02,0.1,0.28,0.6)){
   x <- splitInput(x)
   len <- length(x)
   
